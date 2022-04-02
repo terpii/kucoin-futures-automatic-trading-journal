@@ -5,3 +5,4 @@ This is a work-in-progress python script that can help traders analyse their pro
 ## Todo
 - Save orders to file
 - Calculate profits/losses and other stats
+- add installation guide
