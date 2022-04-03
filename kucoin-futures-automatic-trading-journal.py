@@ -38,40 +38,70 @@ from kucoin_futures.client import Trade
 client_trade = Trade(key=api_key, secret=api_key_secret, passphrase=api_password, is_sandbox=False, url='https://api-futures.kucoin.com')
 
 order_history = client_trade.get_24h_done_order()
-
  
 # We will now iterate through every order and save the ones that aren't 
-
-#parse ids
-order_ids = []
-for order in order_history:
-    order_ids.insert(-1 ,order['id'])
-
-
-with open(trading_journal_location) as f:
-    trading_journal_content = f.readlines()
-
-# check if id is in file and add it to new_ids
-new_ids = []
-for id in order_ids:
-    if id in trading_journal_content:
-        continue
-    else:
-        new_ids.insert(-1, id)
+with open(trading_journal_location, 'r') as f:
+    trading_journal_content = f.read()
 
 
 # Get info about the orders
-orders_info = []
-for id in new_ids:
-    id_info = client_trade.get_order_details(id)
-    
-    market = id_info['symbol']#currency pair
-    order_type = id_info['type']
-    order_side = id_info['side']#buy/sell
-    leverage = id_info['leverage']
-    quantity = id_info['size']
-    value = id_info['filledValue']
-    time = datetime.datetime.fromtimestamp(id_info['orderTime']/1000.0)
-    used_currency = id_info['settleCurrency']
+orders_string = ""
+for order in order_history:
+    order_id = order['id']
 
+    if order_id in trading_journal_content:#if we already have it added, we skip
+        continue
     
+    
+    order_side = order['side']#buy/sell
+    order_type = order['type']#market/limit
+    time = datetime.datetime.fromtimestamp(order['updatedAt']/1000.0)
+    symbol = order['symbol']
+    currency = order['settleCurrency']
+    leverage = order['leverage']
+
+    if order_side == 'sell':
+        action = 'Sold'
+    else:#buy order
+        action = 'Bought'
+    
+    if order_type == 'market':
+        volume = order['size']#in USDT
+        price = order['stopPrice']#in USDT
+    else:#type: limit
+        price = order['price']
+        volume = order['size']
+
+
+    final_string = f"""
+{order_id}:
+{action} {volume} {currency} of {symbol} at the price of {price}
+Type: {order_type}
+Time: {time}
+Leverage: {leverage}
+"""
+
+    orders_string = f'{orders_string}{final_string}\n'
+
+# Put it all together in the file
+
+
+
+date = datetime.datetime.now()
+
+out_string = f"""
+--------------------------------------
+Time: {date}
+Balance at time: {balance}
+
+Trades:
+{orders_string}
+--------------------------------------
+
+"""
+
+f = open(trading_journal_location, 'w')
+f.write(out_string + trading_journal_content)
+f.close()
+
+print('Finished! Check the journal file for results')
