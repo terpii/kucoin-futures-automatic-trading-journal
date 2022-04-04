@@ -17,6 +17,7 @@ Now you will need to create an api access
 - Write down your api password in the api_password
 - It only needs the General permission
 - Continue the steps and write down the api key in the api_key file and the secret api key into the api_key_secret file
+
 Installation Finished! Now run it using ``python3 kucoin-futures-automatic-trading-journal.py``
 
 ## Todo
