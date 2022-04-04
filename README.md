@@ -9,6 +9,7 @@ Simply run the python file after every trade and it will append the new info to 
 ``git clone https://github.com/terpii/kucoin-futures-automatic-trading-journal.git`` or download the zip file and unpack it
 
 ``cd kucoin-futures-automatic-trading-journal``
+
 ``python3 -m pip install kucoin_futures``
 
 Now you will need to create an api access
