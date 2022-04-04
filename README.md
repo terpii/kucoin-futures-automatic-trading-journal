@@ -14,7 +14,7 @@ Simply run the python file after every trade and it will append the new info to 
 
 Now you will need to create an api access
 - Go to https://futures.kucoin.com/api/create
-- Write down your api password in the api_password
+- Write down your api password in the api_password file
 - It only needs the General permission
 - Continue the steps and write down the api key in the api_key file and the secret api key into the api_key_secret file
 
